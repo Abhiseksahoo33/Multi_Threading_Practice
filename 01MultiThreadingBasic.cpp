@@ -21,6 +21,9 @@
 // REQUIREMENT
 // Find the addition of all odd number from 1 to 1900000000 and all even number from 1 to 1900000000
 
+// using thread
+
+
 
 #include <iostream>
 #include <thread>
@@ -28,6 +31,7 @@
 #include <algorithm>
 using namespace std;
 using namespace std :: chrono;
+
 typedef unsigned long long ull;
 
 ull OddSum = 0;
@@ -47,18 +51,30 @@ void findOdd(ull start, ull end) {
 			OddSum += i;
 		}
 	}
+
 }
 
+// Main is the single main thread.
 int main() {
 
 	ull start = 0, end = 1900000068;
 	auto startTime = high_resolution_clock::now();
-
-	findOdd(start, end);
-	findEven(start, end);
+    
+    // std::thread thread_Name(Function Pointers, parameter);
+	//Both thread will run parallelly will take time/2 
+    std::thread t1(findEven, start, end);
+    std::thread t2(findOdd, start, end);
+    
+    // Thtread t1, t2 will join the main thread after complition
+    t1.join();
+    t2.join();
+    
+// 	findOdd(start, end);
+// 	findEven(start, end);
 
 	auto stopTime = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stopTime-startTime);
+
 
 
 	cout << "OddSum : " << OddSum << endl;
@@ -72,8 +88,9 @@ int main() {
 /* output
 OddSum : 902500064600001156
 EvenSum : 902500065550001190
-Time taken to run in sec: 8
+Time taken to run in sec: 4
 */
-
+taken to run in sec: 8
+*/
 // compile -> g++ -std=c++11 - pthread file.cpp
 // execute -> ./a.out
